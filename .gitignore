@@ -20,5 +20,6 @@ pip-log.txt
 
 #Mr Developer
 venv
+.vscode
 *.pyc
 build
