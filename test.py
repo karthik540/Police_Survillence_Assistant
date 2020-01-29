@@ -1,11 +1,13 @@
 import cv2
+import time
+def updateSuspectLogs(name , location):
+    fileObj = open("./modules/FriendRecognition/LocationLogs/"+name+".txt" , "a+")
+    localtime = time.asctime( time.localtime(time.time()) )
+    fileObj.write("Location: "+ location + "-----Timestamp: " + localtime + "\n")
+    fileObj.close()
 
 if __name__ == "__main__":
-    frame = cv2.imread("./Assets/botImage.png")
-    while(True):
-        cv2.imshow("HOpe it works !" , frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break 
+    updateSuspectLogs("Karthik" , "Chennai")
 
 
     

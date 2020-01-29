@@ -11,14 +11,19 @@ app = Flask(__name__)
 location_buffer = "Nothing"
 stop_threads = False
 module_buffer = "Nothing"
-ip_addr = "192.168.1.4"
+ip_addr = "192.168.43.69"
 victimFound = False
 data_buffer = ""
 location_buffer = ""
 
-cam1_addr = "192.168.1.5"
-cam2_addr = "192.168.1.3"
+cam1_addr = "192.168.43.23"
+cam2_addr = "192.168.43.84"
 
+def updateSuspectLogs(name , location):
+    fileObj = open("./modules/FriendRecognition/LocationLogs/"+name+".txt" , "a+")
+    localtime = time.asctime( time.localtime(time.time()) )
+    fileObj.write("Location: "+ location + "-----Timestamp: " + localtime + "\n")
+    fileObj.close()
 
 def webcamCap(stop):
     global location_buffer
@@ -49,10 +54,12 @@ def webcamCap(stop):
             cap1 = cv2.VideoCapture("http://"+ cam1_addr +":4747/mjpegfeed")
         except:
             pass
+
         try:
             cap2 = cv2.VideoCapture("http://"+ cam2_addr +":4747/mjpegfeed")
         except:
             pass
+
 
         while(True):
 
@@ -62,14 +69,14 @@ def webcamCap(stop):
                 cv2.imshow('Location :  Chennai' , frame1)
             except:
                 pass
-            
+
             try:
                 ret2 , frame2 = cap2.read()
                 frame2 = frame2[50: , 50:]
                 cv2.imshow('Location :  Delhi' , frame2)
             except:
                 pass
-            
+
 
 
 
@@ -82,8 +89,10 @@ def webcamCap(stop):
                     data_buffer = name
                     location_buffer = "Chennai"
                     if name != "":
+                        updateSuspectLogs(name , location_buffer)
                         victimFound = True
                         print("[ALERT] suspect found at Chennai: " + name)
+
             if counter == 30:
                 name = face.render_frame(frame2)
                 if(name != "No faces"):
@@ -91,9 +100,10 @@ def webcamCap(stop):
                     data_buffer = name
                     location_buffer = "Delhi"
                     if name != "":
+                        updateSuspectLogs(name , location_buffer)
                         victimFound = True
                         print("[ALERT] suspect found at Delhi: " + name)
-            
+
             counter = counter + 1
             
 
@@ -127,7 +137,9 @@ def bot_Event_Handler(message , intent):
         requests.post('http://'+ip_addr + ':5000/start')
         """
         return requests.post('http://'+ip_addr + ':5000/survey')
-        
+    elif intent == "Scene":
+        pass
+    return jsonify({'flag': True})  
 
 @app.route('/start' , methods = ['POST' , 'GET'])
 def startRender():
@@ -193,14 +205,21 @@ def index():
 @app.route('/botResponse' , methods = ['POST' , 'GET'])
 def botResponse():
     userInput = request.form['utext']
+    #userInput = request.form.get('utext')
+    #print(userInput)
     botMessage = botResponseReciever(userInput)
     
     handler_data = bot_Event_Handler(botMessage[0] , botMessage[1])
-    handler_data = handler_data.json()
+    #print(handler_data)
+    try:
+        handler_data = handler_data.json()
+        if not handler_data['flag']:
+            print("comes handler")
+            return jsonify({'response': handler_data['message'] , 'class' : botMessage[1]})
+    except:
+        pass
 
-    if not handler_data['flag']:
-        print("comes handler")
-        return jsonify({'response': handler_data['message'] , 'class' : botMessage[1]})
+    
 
     
 
