@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "collagepro",
+  "private_key_id": "e87be00445b24b11bd634234232b569c39c50f14",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC23uhQk54XXKLZ\nykD5BYWNopwzei9Zj7tCU1smOD5REq6+QjhCJRqfF7X3zW70qU6MzL75cgkOPeK/\nPOGMCqn62tvNmZ7sfHNUMPtDzU9DYd4wPRM58rP3k4ELY28v5LtZJxvIw6hy2+Iu\nNXInhfc4QioXLb09V3nGV/q/Na2QchoFoHVYrIoTeRF8/J/C9FmErF9r+ojuMJZ1\nshL6+3VBTf0VPQLN9/hxCKtqSNTQnQqvLYJdFxsNEt4tyHZWAos9DEJzpE/CI/LK\nldk/ik2RNhjmyieh4g6nVcKEtkO6aEVPz2qxuO5uki+dzwzn27vgT78O2jCn7Lgt\nIWA2ebFxAgMBAAECggEANRoEXsWGziTdux1SgZ07W1YBQqdz0W99wnQ/Dxmc6uDg\ncin7eSWaFeGGOxdh5VS2lQctW3TkMUkCK2ML4aUFF+1uj0TRE73NpYB1rgoTvq7Q\nHLTXfOe/n6ArBDoTAtbKGkjTdhhutS+pfZ6Sb+ykTadU3pcvEP1yRIiurNBy/nLM\n6tXqRAEp6NzSIpZv8U8TTK+tT3dgKRehrpuDIIs7GyBUxU9impfTIHCu/SQQEQdD\nGlG7TbLHLrwpE3GhBvtRBBOZVZ+VH7s9U3Q1S7W0W3Ya2uNzdfTz4lpr+LHOZtQA\nPmpLGTuiZ+FyQ0IQTslebTji1QKJZlSMl545WydTawKBgQD2OgXwkt38xHZdsqO/\nviFGEhrLcpr7Xnmq8msxfvUk32Z2Cl5VU826TXFgrH2/DRm6EZHxElpHTMTNHy0Y\njO3iz4oBZlZuNbdDQghzRj77qEzu8iVqdNmG7yCi/W4I4O6Z0nnkkxtqcoZnlMCI\nGN6lTWw1e/dJ4v+tEa2q0MdepwKBgQC+IRt5ykYdhXtQU69wWYg2sEDn6BCMEZIC\nrkmN+tidf5uC2aj1N63T/5v0PXWsxpGiBRcRzPrKAUYgLrpMwO5K508oVKznPcPq\nPFiFg2neZrVh7gxBPH9m1PGcBqZHZEuhDwGaVLyU0BtUf9WTQFqOoekc0KWKe6PA\nLv5dyRJKJwKBgGKhY3e2nQ1/dRqbUFSiSJnU7r7ILaS7d2kuqhmtjW0zv8tQ4/Cy\nHRqfoubisYwyJzgNibRTca5V5g90iY/oA/JyyAk/gSeshLiAXvouDVSpWgftH2fB\nXtFaQGyJr+YGlA0x7nnNI5JERep//4+ExsrYdJwICEqkj144UqS19ObJAoGAAx2j\nx6Eq+PzhAnX8oAi3lL3asnI5IzJ+hBC7H9qGhj47HC/Y9vvMm3bK5XvEW+p9JHyU\n3jPPwFO5BHn/j5Zx0URtJaoNk1SNy17lzHpU19IzEsHF7aPCKrs+omHxg6X/H0qR\nqifNV1r5t67InzskwMWiflhk/hn8mv+qJ3tOE20CgYA0WqUgVSrpt/JBSs7VRur9\n5xza55DojZJTYad10FvlR8PRw2RvWhJaKy2LOKl3LYafFEwnJMXfPB6jc3tQghDP\n8MzJF39hsXmwsHmhhQ0+oHcZNHsiwIPi5YLzCiRj7tU2jJ7CrjaWujxUIM2dmghx\neXq9L0aHrdv2WvMZePMaBw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "sih-273@collagepro.iam.gserviceaccount.com",
+  "client_id": "101277478721249366398",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sih-273%40collagepro.iam.gserviceaccount.com"
+}

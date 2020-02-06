@@ -1,13 +1,11 @@
-import cv2
-import time
-def updateSuspectLogs(name , location):
-    fileObj = open("./modules/FriendRecognition/LocationLogs/"+name+".txt" , "a+")
-    localtime = time.asctime( time.localtime(time.time()) )
-    fileObj.write("Location: "+ location + "-----Timestamp: " + localtime + "\n")
-    fileObj.close()
+from googletrans import Translator
 
-if __name__ == "__main__":
-    updateSuspectLogs("Karthik" , "Chennai")
+translator = Translator()
+#print(googletrans.LANGUAGES)
+
+result = translator.translate("Kya hua" ,dest='en' , src = 'auto')
+result2 = translator.translate("What happened" ,dest='hi' , src = 'en')
+print(result2.text)
 
 
     
