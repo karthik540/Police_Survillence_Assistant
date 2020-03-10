@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request , jsonify
 from modules.DialogFlowConnect import botResponseReciever
 from modules.FriendRecognition.face_recog import FaceRecog
+from modules.FriendRecognition.LocationLogs.logConvert import suspectSerialize
 from google.cloud import vision
 
 import threading , cv2 , requests , time , os
@@ -24,15 +25,17 @@ app = Flask(__name__)
 location_buffer = "Nothing"
 stop_threads = False
 module_buffer = "Nothing"
-ip_addr = "172.16.40.230"
+
+ip_addr = "192.168.43.69"
+
 victimFound = False
 data_buffer = ""
 location_buffer = ""
 special_buffer = False
 wait_flag = False
 
-cam1_addr = "172.16.40.232"
-cam2_addr = "172.16.40.238"
+cam1_addr = "192.168.43.23"
+cam2_addr = "192.168.43.185"
 
 location1 = "Egmore"
 location2 = "Tambaram"
@@ -40,7 +43,7 @@ location2 = "Tambaram"
 def updateSuspectLogs(name , location):
     fileObj = open("./modules/FriendRecognition/LocationLogs/"+name+".txt" , "a+")
     localtime = time.asctime( time.localtime(time.time()) )
-    fileObj.write("Location: "+ location + "- Timestamp: " + localtime + "\n")
+    fileObj.write("Location= "+ location + "-Timestamp= " + localtime + "\n")
     fileObj.close()
 
 def webcamCap(stop):
@@ -76,13 +79,12 @@ def webcamCap(stop):
             cap1 = cv2.VideoCapture("http://"+ cam1_addr +":4747/mjpegfeed")
         except:
             pass
-
+        """
         try:
             cap2 = cv2.VideoCapture("http://"+ cam2_addr +":4747/mjpegfeed")
         except:
             pass
-
-
+        """
         while(True):
 
             try:
@@ -91,19 +93,20 @@ def webcamCap(stop):
                 cv2.imshow('Location :  ' + location1 , frame1)
             except:
                 pass
-
+            
+            """
             try:
                 ret2 , frame2 = cap2.read()
                 frame2 = frame2[50: , 50:]
                 cv2.imshow('Location :  ' + location2 , frame2)
             except:
                 pass
-
+            """
 
 
 
             #   Face Condition...
-            if counter >= 60:
+            if counter == 60:
                 counter = 0
                 name = face.render_frame(frame1)
                 if(name != "No faces"):
@@ -115,6 +118,7 @@ def webcamCap(stop):
                         victimFound = True
                         print("[ALERT] suspect found at "+location1+": " + name)
 
+            """
             if counter == 30:
                 name = face.render_frame(frame2)
                 if(name != "No faces"):
@@ -125,7 +129,7 @@ def webcamCap(stop):
                         updateSuspectLogs(name , location_buffer)
                         victimFound = True
                         print("[ALERT] suspect found at "+location2+": " + name)
-
+            """
             counter = counter + 1
             
 
@@ -137,16 +141,19 @@ def webcamCap(stop):
             cap1.release()
         except:
             pass
+        """
         try:
             cap2.release()
         except:
             pass
+        """
         cv2.destroyAllWindows()
 
     elif module_buffer == "Scene":
         print("[STATUS] DATA BUFFER = " + data_buffer)
         if data_buffer == location1:
             cap1 = cv2.VideoCapture("http://"+ cam1_addr +":4747/mjpegfeed")
+        
         elif data_buffer  == location2:
             cap1 = cv2.VideoCapture("http://"+ cam2_addr +":4747/mjpegfeed")
         
@@ -203,13 +210,14 @@ def webcamCap(stop):
                 break
         wait_flag = False
         print(data_buffer)
-    """
+    
     elif module_buffer == "Track":
-        fileObj = open("./modules/FriendRecognition/LocationLogs/"+name+".txt" , "a+")
-        localtime = time.asctime( time.localtime(time.time()) )
-        fileObj.write("Location: "+ location + "- Timestamp: " + localtime + "\n")
-        fileObj.close()
-    """
+        temp = suspectSerialize(data_buffer)
+        data_buffer = str(temp)
+        print(data_buffer)
+        
+        wait_flag = False
+    
 
     try:
         cap1.release()
@@ -241,7 +249,6 @@ def bot_Event_Handler(message , intent):
     elif intent == "Scene":
         data_buffer = message.replace("Okay analyzing " , "")
         return requests.post('http://'+ip_addr + ':5000/scene')
-        return requests.post('http://'+ip_addr + ':5000/speed')
     elif intent == "Track":
         data_buffer = message.replace("Tracking " , "")
         return requests.post('http://'+ip_addr + ':5000/track')
@@ -331,15 +338,18 @@ def index():
 def botResponse():
     global special_buffer
     global wait_flag
-
     userInput = request.form['utext']
+    print(userInput)
 
-    newText = translator.translate(userInput ,dest='en' , src = 'auto')
+    #newText = translator.translate(userInput ,dest='en' , src = 'auto')
 
+    #print(newText.text)
     #userInput = request.form.get('utext')
     #print(userInput)
-    botMessage = botResponseReciever(newText.text)
     
+    #botMessage = botResponseReciever(newText.text)
+    botMessage = botResponseReciever(userInput)
+
     handler_data = bot_Event_Handler(botMessage[0] , botMessage[1])
     #print(handler_data)
     try:
@@ -367,8 +377,9 @@ def botResponse():
     #return solution_finder(errorMessage)
 
 
-    newText = translator.translate(userInput ,dest='en' , src = 'auto')
+    #newText = translator.translate(userInput ,dest='en' , src = 'auto')
     return  jsonify({'response': botMessage[0] , 'class' : botMessage[1]})
-
+    
+    
 if __name__ == "__main__":
     app.run(debug = True , host= "0.0.0.0" , port= 5000)

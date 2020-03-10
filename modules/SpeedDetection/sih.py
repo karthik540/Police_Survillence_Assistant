@@ -12,8 +12,10 @@ object_count = 0; theta = 0.5903; speed = 0.0; speed_kmph = 0.0
 road_length = dist_from_camera*math.tan(theta)*2
 static_back = None; motion_list = [ None, None ]; time = []
 df = pandas.DataFrame(columns = ["Start", "End"])
-video = cv2.VideoCapture(0)
+
+video = cv2.VideoCapture("http://192.168.43.23:4747/mjpegfeed")
 check, frame = video.read()
+
 sleep(2)
 frame_count = 0; last_frame_motion = 0; delta_t = 0
 motion = 0; stk = []; x_cor = []; t = datetime.now()
@@ -64,7 +66,7 @@ while True:
         #saving the image of tracked object
         if(centroid_x>300)and(centroid_x<340):
             obj_img = img[y:y+h, x:x+w]
-            #cv2.imwrite("Object "+str(object_count)+".png", obj_img)
+            cv2.imwrite("Object "+str(object_count)+".png", obj_img)
 
     if motion==0 and last_frame_motion==1:
         #   termination point...
@@ -80,7 +82,7 @@ while True:
             except:
                 print("Error: Object Moved Too Fast")
             speed_kmph = 18/5*speed
-            if speed > 1:
+            if speed > 10:
                 cv2.imwrite("Object "+str(object_count)+".png", obj_img)
                 print("Velocity of Object %d: %.2f m/s; %.2f km/h" %(object_count, speed, speed_kmph))
     
