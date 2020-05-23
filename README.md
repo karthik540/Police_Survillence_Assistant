@@ -22,4 +22,4 @@ python main.py
 - Find **PSA.apk**
 - **Install** it on your Android Device
 
-
+![](appGif.gif)
