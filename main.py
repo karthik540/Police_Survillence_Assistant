@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request , jsonify
-from modules.DialogFlowConnect import botResponseReciever
+#from modules.DialogFlowConnect import botResponseReciever
+from modules.watsonConnect import botResponseReciever
 from modules.FriendRecognition.face_recog import FaceRecog
+from modules.CrowdDetection import scene_detect
 from modules.FriendRecognition.LocationLogs.logConvert import suspectSerialize
 from google.cloud import vision
 
@@ -26,16 +28,17 @@ location_buffer = "Nothing"
 stop_threads = False
 module_buffer = "Nothing"
 
-ip_addr = "192.168.43.69"
+ip_addr = "192.168.1.13"
 
 victimFound = False
 data_buffer = ""
 location_buffer = ""
+isCrowd = False
 special_buffer = False
 wait_flag = False
 
-cam1_addr = "192.168.43.23"
-cam2_addr = "192.168.43.185"
+cam1_addr = "192.168.1.11"
+cam2_addr = "192.168.1.3"
 
 location1 = "Egmore"
 location2 = "Tambaram"
@@ -49,7 +52,7 @@ def updateSuspectLogs(name , location):
 def webcamCap(stop):
     global location_buffer
     global data_buffer
-    global victimFound
+    global victimFound , isCrowd
     global module_buffer
     global stop_threads
     global wait_flag
@@ -85,6 +88,7 @@ def webcamCap(stop):
         except:
             pass
         """
+        counter = 0
         while(True):
 
             try:
@@ -117,6 +121,8 @@ def webcamCap(stop):
                         updateSuspectLogs(name , location_buffer)
                         victimFound = True
                         print("[ALERT] suspect found at "+location1+": " + name)
+                    
+
 
             """
             if counter == 30:
@@ -147,6 +153,87 @@ def webcamCap(stop):
         except:
             pass
         """
+        cv2.destroyAllWindows()
+    
+    elif module_buffer == "Lockdown":
+        print("[STATUS] Lockdown Mode Activated !")
+        victimFound = False
+        try:
+            cap1 = cv2.VideoCapture("http://"+ cam1_addr +":4747/mjpegfeed")
+        except:
+            pass
+        
+        try:
+            cap2 = cv2.VideoCapture("http://"+ cam2_addr +":4747/mjpegfeed")
+        except:
+            pass
+        
+        counter = 0
+        while(True):
+
+            try:
+                ret3 , frame3 = cap1.read()
+                frame3 = frame3[50: , 50:]
+                cv2.imshow('Location :  ' + location1 , frame3)
+            except:
+                pass
+        
+            
+            try:
+                ret4 , frame4 = cap2.read()
+                frame4 = frame4[50: , 50:]
+                cv2.imshow('Location :  ' + location2 , frame4)
+            except:
+                pass
+            
+
+
+            #   Face Condition...
+            if counter == 100:
+                counter = 0
+                    
+                image = frame3
+                success, encoded_image = cv2.imencode('.jpg', image)
+                content  = encoded_image.tobytes()
+                
+                isCrowd = scene_detect(content)
+
+                if(isCrowd == 1):
+                    location_buffer = location1
+                    victimFound = True
+                    print("[ALERT] Crowd detected at "+location1)
+
+
+            
+            if counter == 30:
+                image = frame4
+                success, encoded_image = cv2.imencode('.jpg', image)
+                content  = encoded_image.tobytes()
+                
+                isCrowd = scene_detect(content)
+
+                if(isCrowd == 1):
+                    location_buffer = location1
+                    victimFound = True
+                    print("[ALERT] Crowd detected at "+location1)
+            
+            counter = counter + 1
+            
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+            if stop():
+                break
+        try:
+            cap1.release()
+        except:
+            pass
+        
+        try:
+            cap2.release()
+        except:
+            pass
+        
         cv2.destroyAllWindows()
 
     elif module_buffer == "Scene":
@@ -246,6 +333,8 @@ def bot_Event_Handler(message , intent):
         requests.post('http://'+ip_addr + ':5000/start')
         """
         return requests.post('http://'+ip_addr + ':5000/survey')
+    elif intent == "Lockdown":
+        return requests.post('http://'+ip_addr + ':5000/lockdown')
     elif intent == "Scene":
         data_buffer = message.replace("Okay analyzing " , "")
         return requests.post('http://'+ip_addr + ':5000/scene')
@@ -272,6 +361,7 @@ def stopRender():
     stop_threads = True
     time.sleep(0.3)
     #module_buffer = "Nothing"
+    cv2.destroyAllWindows()
     stop_threads = False
     print('[STATUS] stop_var = ' + str(stop_threads))
     print('[STATUS] Thread stops...')
@@ -283,11 +373,13 @@ def surveyMode():
     global module_buffer
     global victimFound
     global data_buffer
+    global isCrowd
     global location_buffer
 
     requests.post('http://'+ip_addr + ':5000/stop')
     time.sleep(0.3)
     victimFound = False
+    isCrowd = False
     module_buffer = "Surveillance"
     if not stop_threads:
         print('[STATUS] Thread Initiating.')
@@ -295,8 +387,34 @@ def surveyMode():
         webcam_thread.start()
         while(not victimFound):
             continue
+        print("comes out of lockdown !{}".format(data_buffer)) 
+        return jsonify({ 'flag' : False, 'message': "Corona Suspect " + data_buffer +" found at "+ location_buffer }) 
+    print('[STATUS] Thread running...')
+    return jsonify({'flag': True})
+
+@app.route('/lockdown' , methods = ['POST' , 'GET'])
+def lockdownMode():
+    global stop_threads
+    global module_buffer
+    global victimFound
+    global data_buffer
+    global isCrowd
+    global location_buffer
+
+    requests.post('http://'+ip_addr + ':5000/stop')
+    time.sleep(0.3)
+    victimFound = False
+    isCrowd = False
+    module_buffer = "Lockdown"
+    if not stop_threads:
+        print('[STATUS] Thread Initiating.')
+        webcam_thread = threading.Thread(target = webcamCap, args =(lambda : stop_threads, )) 
+        webcam_thread.start()
+        while(not victimFound):
+            continue
         print("comes out of face !{}".format(data_buffer))
-        return jsonify({ 'flag' : False, 'message': "Suspect "+data_buffer +" at " + location_buffer })
+
+        return jsonify({ 'flag' : False, 'message': "Crowd Detected at "+ location_buffer })
     print('[STATUS] Thread running...')
     return jsonify({'flag': True})
 
