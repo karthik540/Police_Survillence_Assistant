@@ -1,5 +1,5 @@
-# Police_Survillence_Assistant
-A surviellance assistant for assisting the police functionalities
+# Police_Surveillance_Assistant
+A surveillance assistant for assisting the police functionalities
 
 
 ### Clone the Repository
