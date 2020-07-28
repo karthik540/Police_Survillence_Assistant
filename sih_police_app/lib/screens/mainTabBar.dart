@@ -7,67 +7,67 @@ import 'textChatView/textChat.dart';
 import 'voiceChatView/voiceChat.dart';
 import 'package:sih_policebot/globals.dart' as globals;
 
-class MainTabBar extends StatefulWidget{
+class MainTabBar extends StatefulWidget {
   @override
   _MainTabBarState createState() => _MainTabBarState();
 }
 
-class _MainTabBarState extends State<MainTabBar> with SingleTickerProviderStateMixin{
+class _MainTabBarState extends State<MainTabBar>
+    with SingleTickerProviderStateMixin {
   TabController _controller;
   String _ip = "172.16.40.230";
-  bool _isGranted = false;
+  bool _voiceInput = true;
+  //bool _isGranted = false;
   //List<Map<String, String>> {[{"Chennai": "10:20"}, {"Chennai": "10:20"}, {"Chennai": "10:20"}]};
   //static final _voiceChatKey = new GlobalKey<_voiceChatKeyState>();
   //var l = [{"location":"Chennai","time":"10:20"}, {"location":"Delhi","time":"10:20"}, {"location":"Mumbai","time":"10:20"}];
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    _controller = TabController(
-      length: 3,
-      vsync: this,
-      initialIndex: 1
-    )..addListener(() => setState(() => {}));
+    _controller = TabController(length: 3, vsync: this, initialIndex: 1)
+      ..addListener(() => setState(() => {}));
   }
+
   @override
-  void dispose(){
+  void dispose() {
     _controller.dispose();
     //_textController.dispose();
     super.dispose();
   }
-  void setIp(BuildContext context) async{
+
+  void setIp(BuildContext context) async {
     final TextEditingController controller = TextEditingController();
     await showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Center(child: Text("Current IP: " + _ip)),
-        contentPadding: EdgeInsets.all(16.0),
-        content: TextField(
-              controller: controller,
-              autofocus: true,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: "Enter new IP"),
-        ),
-        actions: <Widget>[
-          FlatButton(
-            child: Text("Cancel"),
-            onPressed: () => Navigator.pop(context),
-          ),
-          FlatButton(
-            child: Text("Set"),
-            onPressed: () {
-              setState(() => _ip = controller.text);
-              print("Done");
-              Navigator.pop(context);
-            },
-          )
-        ],
-        elevation:  24.0,
-      )
-    );
+        context: context,
+        builder: (_) => AlertDialog(
+              title: Center(child: Text("Current IP: " + _ip)),
+              contentPadding: EdgeInsets.all(16.0),
+              content: TextField(
+                controller: controller,
+                autofocus: true,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(hintText: "Enter new IP"),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                FlatButton(
+                  child: Text("Set"),
+                  onPressed: () {
+                    setState(() => _ip = controller.text);
+                    print("Done");
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+              elevation: 24.0,
+            ));
     //controller.dispose();
   }
-  Future<void> getPermission() async{
+  /*Future<void> getPermission() async{
     final PermissionHandler permissionHandler = new PermissionHandler();
     var status = await permissionHandler.checkPermissionStatus(PermissionGroup.camera);
     if(status != PermissionStatus.granted){
@@ -81,9 +81,10 @@ class _MainTabBarState extends State<MainTabBar> with SingleTickerProviderStateM
 
     //var image = await ImagePicker.pickImage(source: ImageSource.camera);
     //print(image);
-  }
+  }*/
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
       initialIndex: 1,
@@ -103,7 +104,7 @@ class _MainTabBarState extends State<MainTabBar> with SingleTickerProviderStateM
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.settings),
-              onPressed: (){
+              onPressed: () {
                 setIp(context);
               },
             )
@@ -114,18 +115,23 @@ class _MainTabBarState extends State<MainTabBar> with SingleTickerProviderStateM
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
             MapScreen(),
-            VoiceChatScreen(ip: _ip),
+            VoiceChatScreen(ip: _ip, voiceInput: _voiceInput),
             TextChatScreen()
           ],
         ),
-        floatingActionButton: _controller.index == 1 ? ImageTranslator(translate: translateImage) : null,
+        //floatingActionButton: _controller.index == 1 ? ImageTranslator(translate: translateImage) : null,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => setState(() => _voiceInput = !_voiceInput),
+          tooltip: "Change input mode",
+          child: Icon(_voiceInput ? Icons.send : Icons.keyboard_voice),
+        ),
         resizeToAvoidBottomPadding: false,
       ),
     );
   }
 }
 
-class ImageTranslator extends StatelessWidget {
+/*class ImageTranslator extends StatelessWidget {
   final Function translate;
   ImageTranslator({this.translate});
   @override
@@ -136,4 +142,4 @@ class ImageTranslator extends StatelessWidget {
       child: Icon(Icons.camera)
     );
   }
-}
+}*/
