@@ -79,8 +79,9 @@ class _VoiceIOState extends State<VoiceIO> {
     try {
       print("x" + msg + "x");
       //_translator.translate(_inputText, from: "hi", to: "en").then((res) => print(res));
-      /*if (msg.contains(" ")) {
+      if (msg.contains(" ")) {
         if (!_requested) setState(() => _requested = true);
+        print("here");
         //if(_inputText.contains("scene"))
         //onResponse("Analyzing");
         //globals.locations = [{"location":"Chennai","time":"10:21"}, {"location":"Delhi","time":"10:20"}, {"location":"Mumbai","time":"10:20"}];
@@ -96,12 +97,19 @@ class _VoiceIOState extends State<VoiceIO> {
           } else if (res.statusCode != 500) {
             showErrorMessage("Status code: " + res.statusCode.toString());
           }
-          setState(() => _requested = false);
+          setState(() {
+            _requested = false;
+            //_inputText = "";
+          });
           print("Done");
         });
+        /*setState(() {
+          _requested = false;
+          _inputText = "";
+        });*/
         //setState(() => _requested = false);
         //}
-      }*/
+      }
     } catch (err) {
       setState(() => _requested = false);
       showErrorMessage(err.toString());

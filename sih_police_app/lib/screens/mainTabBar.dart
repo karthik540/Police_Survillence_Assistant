@@ -120,11 +120,13 @@ class _MainTabBarState extends State<MainTabBar>
           ],
         ),
         //floatingActionButton: _controller.index == 1 ? ImageTranslator(translate: translateImage) : null,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => setState(() => _voiceInput = !_voiceInput),
-          tooltip: "Change input mode",
-          child: Icon(_voiceInput ? Icons.send : Icons.keyboard_voice),
-        ),
+        floatingActionButton: _controller.index == 1
+            ? FloatingActionButton(
+                onPressed: () => setState(() => _voiceInput = !_voiceInput),
+                tooltip: "Change input mode",
+                child: Icon(_voiceInput ? Icons.send : Icons.keyboard_voice),
+              )
+            : null,
         resizeToAvoidBottomPadding: false,
       ),
     );

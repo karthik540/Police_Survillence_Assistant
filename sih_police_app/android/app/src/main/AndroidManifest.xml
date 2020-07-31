@@ -12,7 +12,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="sih_policebot"
+        android:label="sih_police_app"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCyVn_83i4iShl9p3p9vYoR7dyO4ibMeiM"/>
