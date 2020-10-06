@@ -3,24 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sih_policebot/globals.dart' as globals;
 
-class MapScreen extends StatefulWidget{
+class MapScreen extends StatefulWidget {
   //final List<Map<String, String>> locations;
   //MapScreen({@required this.locations});
   @override
   MapScreenState createState() => MapScreenState();
 }
 
-class MapScreenState extends State<MapScreen>{
+class MapScreenState extends State<MapScreen> {
   Completer<GoogleMapController> _controller = Completer();
   Set<Marker> markers = {};
   @override
-  void initState(){
+  void initState() {
     super.initState();
     setState(() => markers = getMarkers());
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
         //Center(child: Text("MapView"))
@@ -29,42 +29,43 @@ class MapScreenState extends State<MapScreen>{
     );
   }
 
-  Set<Marker> getMarkers(){
+  Set<Marker> getMarkers() {
     Map<String, LatLng> loc = {
       "Tambaram": LatLng(12.9249, 80.1000),
       "Avadi": LatLng(13.1067, 80.0970),
-      "Egmore": LatLng(13.0732, 80.2609)
+      "Egmore": LatLng(13.0732, 80.2609),
+      "Bapunagar": LatLng(23.038410, 72.629355),
+      "Maninagar": LatLng(22.995069, 72.602835)
     };
-    
+
     //List<Marker> out = List();
     //this.widget.locations.forEach((k, v) => out.add(new Marker(markerId: )));
-    var out = globals.locations.map((Map i) => Marker(
-      markerId: MarkerId(i["location"]),
-      position: loc[i["location"]],
-      infoWindow: InfoWindow(title: globals.suspect + ", Last seen: " + i["time"]),
-      icon: BitmapDescriptor.defaultMarkerWithHue(
-        BitmapDescriptor.hueOrange
-      )
-    )).toSet();
+    var out = globals.locations
+        .map((Map i) => Marker(
+            markerId: MarkerId(i["location"]),
+            position: loc[i["location"]],
+            infoWindow: InfoWindow(
+                title: globals.suspect + ", Last seen: " + i["time"]),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueOrange)))
+        .toSet();
     print(out);
     return out;
   }
 
-  Widget _mapView(BuildContext context){
+  Widget _mapView(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(13.0317, 80.1817),
-          zoom: 11
-        ),
-        onMapCreated: (GoogleMapController controller){
-          _controller.complete(controller);
-        },
-        markers: markers
-      ),
+          mapType: MapType.normal,
+          initialCameraPosition: CameraPosition(
+              target: LatLng(13.0317, 80.1817), //LatLng(23.01409, 72.617203),
+              zoom: 13),
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          },
+          markers: markers),
     );
   }
 }

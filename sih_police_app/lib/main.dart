@@ -1,24 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'screens/mainTabBar.dart';
 
-void main() => runApp(MyApp());
+class ThemeStateNotifier extends ChangeNotifier {
+  bool darkMode = false;
+  void updateThemeState(bool darkMode) {
+    this.darkMode = darkMode;
+    notifyListeners();
+  }
+}
+
+void main() => runApp(ChangeNotifierProvider<ThemeStateNotifier>(
+      create: (context) => ThemeStateNotifier(),
+      child: MyApp(),
+    ));
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   //static final _tabbedKey = GlobalKey<_MainTabBarState>();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Police App',
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        accentColor: Colors.blue
-      ),
-      home: MainTabBar(),
-    );
+    return Consumer<ThemeStateNotifier>(builder: (context, state, child) {
+      return MaterialApp(
+        title: 'Police App',
+        theme:
+            ThemeData(primarySwatch: Colors.orange, accentColor: Colors.blue),
+        darkTheme: ThemeData.dark(),
+        home: MainTabBar(),
+        themeMode: state.darkMode ? ThemeMode.dark : ThemeMode.light,
+      );
+    });
   }
 }
-
 
 /*class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);

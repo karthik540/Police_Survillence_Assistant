@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 //import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:sih_policebot/main.dart';
 import 'mapsView/maps.dart';
 import 'textChatView/textChat.dart';
@@ -17,6 +18,7 @@ class _MainTabBarState extends State<MainTabBar>
   TabController _controller;
   String _ip = "172.16.40.230";
   bool _voiceInput = true;
+  bool theme = true;
   //bool _isGranted = false;
   //List<Map<String, String>> {[{"Chennai": "10:20"}, {"Chennai": "10:20"}, {"Chennai": "10:20"}]};
   //static final _voiceChatKey = new GlobalKey<_voiceChatKeyState>();
@@ -102,6 +104,15 @@ class _MainTabBarState extends State<MainTabBar>
           title: Text("Singam"),
           centerTitle: true,
           actions: <Widget>[
+            Switch(
+                activeColor: Colors.white,
+                inactiveThumbColor: Colors.black,
+                //activeThumbImage: ImageProvider(),
+                value: Provider.of<ThemeStateNotifier>(context).darkMode,
+                onChanged: (val) {
+                  Provider.of<ThemeStateNotifier>(context, listen: false)
+                      .updateThemeState(val);
+                }),
             IconButton(
               icon: Icon(Icons.settings),
               onPressed: () {

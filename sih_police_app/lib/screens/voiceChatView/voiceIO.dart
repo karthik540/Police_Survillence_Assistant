@@ -188,10 +188,14 @@ class _VoiceIOState extends State<VoiceIO> {
                 ? FloatingActionButton(
                     child: Icon(_isListening
                         ? Icons.hearing
-                        : _isSpeaking ? Icons.stop : Icons.keyboard_voice),
+                        : _isSpeaking
+                            ? Icons.stop
+                            : Icons.keyboard_voice),
                     backgroundColor: _isListening
                         ? Colors.green
-                        : _isSpeaking ? Colors.red : Colors.blue,
+                        : _isSpeaking
+                            ? Colors.red
+                            : null,
                     onPressed: () {
                       if (_isSpeaking)
                         stopReading();
